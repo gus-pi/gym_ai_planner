@@ -1,4 +1,4 @@
-import { AuthView } from '@neondatabase/neon-js/auth/react';
+import { AuthView } from '@neondatabase/neon-js/auth/react/ui';
 import { useParams } from 'react-router-dom';
 
 const Auth = () => {
