@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Card } from '../components/ui/Card';
 import { Select } from '../components/ui/Select';
 import { useState } from 'react';
-import { Textarea } from '../components/ui/TextArea';
+import { Textarea } from '../components/ui/Textarea';
 import { Button } from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
@@ -95,7 +95,7 @@ const Onboarding = () => {
                                 label="What's your primary goal"
                                 options={goalOptions}
                                 value={formData.goal}
-                                name="goals"
+                                name="goal"
                                 onChange={handleChange}
                             />
                             <Select
@@ -143,6 +143,7 @@ const Onboarding = () => {
 
                             <Textarea
                                 id="injuries"
+                                name="injuries"
                                 label="Any injuries or limitations? (optional)"
                                 placeholder="E.g. lower back issues, bad knees..."
                                 rows={3}
