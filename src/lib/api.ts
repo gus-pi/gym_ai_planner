@@ -17,6 +17,6 @@ async function post(path: string, body: object) {
 
 export const api = {
     saveProfile: (userId: string, profile: Omit<UserProfile, 'userId' | 'updatedAt'>) => {
-        post('/profile', { userId, ...profile });
+        return post('/profile', { userId, ...profile });
     },
 };

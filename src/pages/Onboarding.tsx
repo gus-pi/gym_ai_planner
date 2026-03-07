@@ -69,7 +69,7 @@ const Onboarding = () => {
         }));
     };
 
-    const handleQuestionnaire = (e: React.SubmitEvent) => {
+    const handleQuestionnaire = async (e: React.SubmitEvent) => {
         e.preventDefault();
 
         const profile: Omit<UserProfile, 'userId' | 'updatedAt'> = {
@@ -82,7 +82,12 @@ const Onboarding = () => {
             preferredSplit: formData.preferredSplit as UserProfile['preferredSplit'],
         };
 
-        saveProfile(profile);
+        try {
+            await saveProfile(profile);
+        } catch (error) {
+            console.log('Error saving profile');
+            return;
+        }
     };
 
     if (!user) {
