@@ -25,7 +25,6 @@ export const saveProfile = async (req: Request, res: Response) => {
             !daysPerWeek ||
             !sessionLength ||
             !equipment ||
-            !injuries ||
             !preferredSplit
         ) {
             return res.status(400).json({ error: 'Missing required fields' });
