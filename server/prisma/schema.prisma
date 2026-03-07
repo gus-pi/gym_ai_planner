@@ -12,3 +12,15 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  user_id         String   @id @db.Uuid
+  goal            String   @db.VarChar(20)
+  experience      String   @db.VarChar(20)
+  days_per_week   Int
+  session_length  Int
+  equipment       String   @db.VarChar(20)
+  injuries        String?
+  preferred_split String   @db.VarChar(20)
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+}
