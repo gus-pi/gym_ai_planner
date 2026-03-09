@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import { generateTrainingPlan } from '../lib/ai';
 
 export const saveProfile = async (req: Request, res: Response) => {
     try {
@@ -58,5 +59,63 @@ export const saveProfile = async (req: Request, res: Response) => {
     } catch (error) {
         console.log('Error saving profile data:', error);
         res.status(500).json({ error: 'Failed to save profile data' });
+    }
+};
+
+export const generatePlan = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'user ID is required' });
+        }
+        const profile = await prisma.user.findUnique({ where: { user_id: userId } });
+
+        if (!profile) {
+            return res
+                .status(400)
+                .json({ error: 'User profile not found. Complete onboarding first.' });
+        }
+
+        //FETCH PLAN TABLE
+        const latestPlan = await prisma.plan.findFirst({
+            where: { user_id: userId },
+            orderBy: { created_at: 'desc' },
+            select: { version: true },
+        });
+
+        const nextVersion = latestPlan ? latestPlan.version + 1 : 1;
+
+        let planJson;
+
+        try {
+            planJson = await generateTrainingPlan(profile);
+        } catch (error) {
+            console.log('AI generation failed:', error);
+            res.status(500).json({
+                error: 'Failed to generate plan, please try again',
+                details: error instanceof Error ? error.message : 'Unknown error',
+            });
+        }
+
+        const planText = JSON.stringify(planJson, null, 2);
+
+        const newPlan = await prisma.plan.create({
+            data: {
+                user_id: userId,
+                plan_json: planJson,
+                plan_text: planText,
+                version: nextVersion,
+            },
+        });
+
+        return res.status(200).json({
+            id: newPlan.id,
+            version: newPlan.version,
+            createdAt: newPlan.created_at,
+        });
+    } catch (error) {
+        console.log('Error generating plan:', error);
+        res.status(500).json({ error: 'Failed to generate plan' });
     }
 };
