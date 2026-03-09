@@ -38,7 +38,7 @@ export async function generateTrainingPlan(
 
     try {
         const completion = await openai.chat.completions.create({
-            model: 'meta-llama/llama-2-7b-chat:free',
+            model: 'gpt-3.5-turbo',
             messages: [
                 {
                     role: 'system',
