@@ -55,10 +55,10 @@ export const saveProfile = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(200).json({ success: true });
+        return res.status(200).json({ success: true });
     } catch (error) {
         console.log('Error saving profile data:', error);
-        res.status(500).json({ error: 'Failed to save profile data' });
+        return res.status(500).json({ error: 'Failed to save profile data' });
     }
 };
 
@@ -92,7 +92,7 @@ export const generatePlan = async (req: Request, res: Response) => {
             planJson = await generateTrainingPlan(profile);
         } catch (error) {
             console.log('AI generation failed:', error);
-            res.status(500).json({
+            return res.status(500).json({
                 error: 'Failed to generate plan, please try again',
                 details: error instanceof Error ? error.message : 'Unknown error',
             });
