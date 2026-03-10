@@ -116,6 +116,36 @@ export const generatePlan = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.log('Error generating plan:', error);
-        res.status(500).json({ error: 'Failed to generate plan' });
+        return res.status(500).json({ error: 'Failed to generate plan' });
+    }
+};
+
+export const getPlan = async (req: Request, res: Response) => {
+    try {
+        const userId = req.query.userId as string;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'user ID is required' });
+        }
+
+        const plan = await prisma.plan.findFirst({
+            where: { user_id: userId },
+            orderBy: { created_at: 'desc' },
+        });
+        if (!plan) {
+            return res.status(404).json({ error: 'Plan not found.' });
+        }
+
+        return res.status(200).json({
+            id: plan.id,
+            userId: plan.user_id,
+            planJson: plan.plan_json,
+            planText: plan.plan_text,
+            version: plan.version,
+            createdAt: plan.created_at,
+        });
+    } catch (error) {
+        console.log('Error fetching plan:', error);
+        return res.status(500).json({ error: 'Failed to fetch plan' });
     }
 };
